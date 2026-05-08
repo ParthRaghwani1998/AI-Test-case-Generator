@@ -11,7 +11,12 @@ from datetime import datetime
 load_dotenv()
 
 # Google Gemini client
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+google_api_key = os.getenv("AIzaSyAUIx2sS_Q40LN9DXdvcNWX4ME4QFs9YHE")
+if not google_api_key:
+    st.error("Missing GOOGLE_API_KEY. Add it to your .env file and restart the app.")
+    st.stop()
+
+genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 # Initialize session state for history
