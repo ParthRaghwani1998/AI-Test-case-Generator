@@ -8,15 +8,25 @@ from io import BytesIO
 from openpyxl.styles import Alignment
 from datetime import datetime
 
+# Load local .env file
 load_dotenv()
 
-# Google Gemini client
-google_api_key = os.getenv("AIzaSyAUIx2sS_Q40LN9DXdvcNWX4ME4QFs9YHE")
-if not google_api_key:
-    st.error("Missing GOOGLE_API_KEY. Add it to your .env file and restart the app.")
+# First check .env / environment
+api_key = os.getenv("GOOGLE_API_KEY")
+
+# Fallback to Streamlit secrets
+if not api_key:
+    try:
+        api_key = st.secrets["GOOGLE_API_KEY"]
+    except Exception:
+        api_key = None
+
+if not api_key:
+    st.error("Missing GOOGLE_API_KEY. Add it to Streamlit Secrets or .env file.")
     st.stop()
 
-genai.configure(api_key=google_api_key)
+# Configure Gemini
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 # Initialize session state for history
